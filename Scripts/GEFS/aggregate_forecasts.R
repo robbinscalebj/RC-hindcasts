@@ -1,0 +1,1 @@
+# This script aggregates all forecast files into a single format
