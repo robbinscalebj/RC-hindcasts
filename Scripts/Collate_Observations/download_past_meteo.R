@@ -5,6 +5,7 @@ library(devtools)
 library(worldmet)
 library(dataRetrieval)
 library(lubridate)
+library(here)
 
 
 cors_meta <- getMeta(site = "corsicana", plot = TRUE) 
@@ -13,7 +14,7 @@ cors_code <- cors_meta$code[1]
 
 #maps of isd stations here: https://www.ncei.noaa.gov/maps/hourly/
 
-met_cors <- importNOAA(code = cors_code, year = c(2014:2023))
+met_cors <- importNOAA(code = cors_code, year = c(2006:2023))
 
 
 #Cloud cover from noaa available as oktas or as total cl cover
@@ -34,16 +35,16 @@ met_cors2 <- met_cors%>%
 met_cors2%>%write_csv(here("Data/observation_data/noaa_isd_corsicana.csv"))
 
 #read NWIS always UTC   
-#RC_intake_precip_total.inches <- readNWISuv(siteNumbers = "08064550", parameterCd = "00045")
-#RC_intake_precip_total.inches2<- RC_intake_precip_total.inches%>%
-#  rename(precip_total.in = "X_00045_00000")%>%
- # select(dateTime, precip_total.in)%>% 
-#  mutate(time = ceiling_date(dateTime,unit = "hour"))%>% 
-#  group_by(time)%>%
-#  #sum each hours rainfall to get inches/hour
-#  summarize(Rainfall_mm.s = sum(precip_total.in*25.4/3600))%>% #converting to mm/s which is equivalent to kg/m2 /s, which is same units of GEFS
-#  mutate(Rainfall_mm.s = ifelse(time == as_datetime("2021-04-05 17:00:00"), 0, Rainfall_mm.s))%>%
-#  #set to zero, obviously anomalous and next values are all zeros - gap in data record prior
+RC_intake_precip_total.inches <- readNWISuv(siteNumbers = "08064550", parameterCd = "00045")
+RC_intake_precip_total.inches2<- RC_intake_precip_total.inches%>%
+  rename(precip_total.in = "X_00045_00000")%>%
+  select(dateTime, precip_total.in)%>% 
+  mutate(time = ceiling_date(dateTime,unit = "hour"))%>% 
+  group_by(time)%>%
+  #sum each hours rainfall to get inches/hour
+  summarize(Rainfall_mm.s = sum(precip_total.in*25.4/3600))%>% #converting to mm/s which is equivalent to kg/m2 /s, which is same units of GEFS
+  mutate(Rainfall_mm.s = ifelse(time == as_datetime("2021-04-05 17:00:00"), 0, Rainfall_mm.s))
+  #set to zero, obviously anomalous and next values are all zeros - gap in data record prior
 ###  filter(time >=as_datetime("2021-01-01"))
 
 #met.j <- full_join(met_cors2,RC_intake_precip_total.inches2)%>%
