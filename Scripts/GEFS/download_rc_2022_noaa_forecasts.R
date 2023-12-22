@@ -3,13 +3,13 @@
 # Bulk of code to download archived forecasts from : https://github.com/eco4cast/gefs4cast
 # which was authored by Carl Boettiger and R Quinn Thomas. Adapted here by Caleb Robbins from their "megacube_extract" function
 
-#double checked this matches correctly to downloads from NOMADS systems
+#double checked this matches to previous downloads from NOMADS systems (so this script is gap-filling where those downloads failed)
 
 library(tidyverse)
 library(here)
 library(tictoc)
 library(furrr)
-source(here("NearTerm Forecasts/gefs-methods.R"))
+source(here("Scripts/GEFS/gefs-methods.R"))
 
 sites_rc <- tibble(site_name = "Corsicana Airport", site_id = "rc", 
                     latitude = 32.027075451924304, longitude = -96.39709528628103)
@@ -61,7 +61,7 @@ gefs_dates <- setdiff(desired_dates, f_dates)|>as_date()
                                           horizon, cycle=cycle),
                           time = as.Date(Sys.Date() + dplyr::row_number()))|>
             #slice_head(n = 5) #for testing
-            filter(horizon <= 240) # 10 day forecasts
+            filter(horizon <= 240) # 10 day forecasts - real control can be found in gefs-methods definition of GEFS_horizon()
           
           
           time <- cycle <- reference_datetime <- NULL
@@ -91,7 +91,7 @@ future_pmap(.options = furrr_options(seed = TRUE), list(gribs$url,gribs$time), ~
                       names_to = "variable",
                       values_to = "prediction") |>
   dplyr::ungroup()|>
-  write_csv(paste(here("NearTerm Forecasts/s3_2022_NOAA_GEFS_csv_files", paste(gefs_dates[i], "_ensembles_long.csv"))))
+  write_csv(paste(here("Data/s3_2022_NOAA_GEFS_csv_files", paste(gefs_dates[i], "_ensembles_long.csv"))))
  
 print(paste0("Finished Date: ", gefs_dates[i],". Number ", i, "/", length(gefs_dates), " at ", Sys.time())) 
   }, error = function(e){cat("ERROR : ", conditionMessage(e), "\n")})

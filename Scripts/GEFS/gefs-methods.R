@@ -139,7 +139,7 @@ dir_exists <- function(s3_dir) {
 #' along with descriptions
 #' @export
 gefs_metadata <- function() {
-    readr::read_csv(here("NearTerm Forecasts/getGEFS_scripts/gefs-selected-bands.csv"),show_col_types = FALSE)
+    readr::read_csv(here("Scripts/GEFS/gefs-selected-bands.csv"),show_col_types = FALSE)
 }
 #' mapping of gefs_bands to variable names
 #' @param zero_horizon GEFS zero-horizon data uses different band numbering,
