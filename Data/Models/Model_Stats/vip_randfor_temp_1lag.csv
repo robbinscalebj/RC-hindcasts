@@ -1,0 +1,11 @@
+Variable,Importance
+WaterTemp_C_lag6hr,922516.249863371
+doy,361799.29374716146
+DewPoint_C_lag6hr,110186.58279517549
+AirTemp_C_lag6hr,61253.198322620825
+Pressure_hPa_lag6hr,9933.80859681126
+Depth_m,7657.721703303259
+SWind_m.s_lag6hr,3123.0904446460263
+hour_of_day,1965.793844059284
+WWind_m.s_lag6hr,1636.73964281239
+Cloud_cov_fraction_lag6hr,1445.311723701503

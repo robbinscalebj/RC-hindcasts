@@ -7,7 +7,7 @@ library(tidyverse)
 library(ids)
 
 #Read-in raw data and apply QC steps - .csv file is locally replicated version of unaltered data pulled directly from the profiler
-RC_profiler_data <- read_csv(here("Data/observation_data/RC_raw_df_8Dec2022.csv"))|>
+RC_profiler_data <- read_csv(here("Data/Observation_Data/RC_raw_df_8Dec2022.csv"))|>
   rename(Payout_m = `Payout`,Depth_m = `Depth M`, Temp_C = `Temp C`, SpCond_uS.cm = `Sp Cond uS/cm`, pH = `pH units`, DO_mg.L = `DO mg/L`, DO_per.sat = `DO %sat`, ORP_mv = `ORP mV`, Turbidity_NTU = `Turbidity NTU`, Chla = `Chloro A (V)`)%>%
   mutate(Datetime = Datetime - minutes(30))%>% #profiler time is 30 minutes off, for some reason
   mutate(Payout_m = round(Payout_m*2, digits = 0)/2, #rounds Payout to even number, not necessarily same as depth
@@ -88,4 +88,4 @@ RC_profiler_data|>
   filter(Datetime >=as_datetime("2021-04-15 01:00:00"))|> #data considered acceptable hereafter
   mutate(Datetime_UTC = as.character(Datetime))|>
   select(Datetime_UTC,Payout_m,Temp_C,SpCond_uS.cm,pH,DO_mg.L, DO_per.sat, profileId)|>
-  write_csv(here("Data/observation_data/RC_profiler_tidied_df.csv"))
+  write_csv(here("Data/Observation_Data/RC_profiler_tidied_df.csv"))

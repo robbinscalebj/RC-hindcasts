@@ -19,7 +19,8 @@ met_cors <- importNOAA(code = cors_code, year = c(2006:2023))
 
 #Cloud cover from noaa available as oktas or as total cl cover
 met_cors2 <- met_cors%>%
-  mutate(cl = ifelse(cl == 9, NA_real_, cl))|> # if 9: Sky obscured, or cloud amount cannot be estimated
+  mutate(cl = ifelse(cl == 9, NA_real_, cl),# if 9: Sky obscured, or cloud amount cannot be estimated
+         cl = ifelse(cl >8,8,cl))|> #a few with cl slightly above eight, but cloud layers suggest they should just be 8
   mutate(Cloud_cov_fraction = cl/8, .keep = "unused")%>% #cloud cover at Corsicana downloaded as max of cl_1...cl_3 in oktas 
   #cols must be named: time, Clouds,AirTemp,RelHum,WindSpeed, Rainfall
   select(date,dew_point,Cloud_cov_fraction,ws,wd, air_temp, atmos_pres,RH)%>%
@@ -32,7 +33,7 @@ met_cors2 <- met_cors%>%
          SWind_m.s = ifelse(WindSpeed_m.s == 0, 0, SWind_m.s))
 
 #write csv
-met_cors2%>%write_csv(here("Data/observation_data/noaa_isd_corsicana.csv"))
+met_cors2%>%write_csv(here("Data/Observation_Data/noaa_isd_corsicana.csv"))
 
 #read NWIS always UTC   
 RC_intake_precip_total.inches <- readNWISuv(siteNumbers = "08064550", parameterCd = "00045")

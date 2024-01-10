@@ -46,5 +46,5 @@ files2_shortnames <- files2|>
 walk2(.x = files2, .y = files2_shortnames, ~read_csv(.)|>
                    filter(hours_since_forecast_issue %in% seq(3, 240, by =3))|>
                    mutate(wind_direction = atan2(northward_wind,eastward_wind)*(180/pi))|>
-        write_csv(paste(here("Data/GEFS_data", paste0(.y, "_ensembles.csv"))))
+        write_csv(paste(here("Data/GEFS_Data", paste0(.y, "_ensembles.csv"))))
 )
