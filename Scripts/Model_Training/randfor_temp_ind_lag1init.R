@@ -9,6 +9,7 @@ library(tidymodels)
 library(doParallel)
 library(butcher)
 library(bundle)
+library(arrow)
 library(vip)
 
 model_name <- "randfor_temp_1lag"
@@ -16,7 +17,7 @@ model_name <- "randfor_temp_1lag"
 
 # Define training data - all 2021 data with profiler observations of temperature, DO, and observed meteorological data
 # must create lagged water temp variable (where possible - some obs don't have previous info)
-RC_df <- read_csv(here("Data/Observation_Data/profiler-meteo-tidied_df-2021-lagged.csv"))|>
+RC_df <- read_parquet(here("Data/Observation_Data/profiler-meteo-tidied_df-2021-lagged.parquet"))|>
   select(-contains("DO_mg.L"), -contains("pH"), -contains("SpCond_uS.cm"))|>
   select(Datetime_UTC,Depth_m, doy, hour_of_day, WaterTemp_C, contains("lag6hr"))|>
   drop_na() #package for random forest plays like garbage with NAs
