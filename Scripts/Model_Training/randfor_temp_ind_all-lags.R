@@ -1,5 +1,5 @@
-# This script trains a random forest model randfor_temp_1lag, which incorporates an initial state in the form of a predictor that is the previously observed temperature on a three hour lag (forecast data) 
-# no lagged predictors, and assumes all the observations are independent
+# This script trains a random forest model randfor_temp_all-lags
+# The response and predictors are all lagged at 6 hour intervals for 10 days to correspond to 10-day forecasts
 
 # This model is meant to predict only the next state based on the previous state and current weather covariates
 
@@ -11,6 +11,7 @@ library(butcher)
 library(bundle)
 library(arrow)
 library(vip)
+library(tictoc)
 
 model_name <- "randfor_temp_all-lags"
 
@@ -46,7 +47,7 @@ mod_workflow <- workflow()|>
 
 
 #tune workflow
-
+tic()
 cl <- makePSOCKcluster(15)
 doParallel::registerDoParallel(cl)
 
@@ -94,3 +95,4 @@ saveRDS(res_bundle, here(paste0("Data/Models/Fitted_Models/",model_name,".Rds"))
 
 #mod_vip|>write_csv(here(paste0("Data/Models/Model_Stats/vip_",model_name,".csv")))
 final_rmse|>select(Depth_m,.estimate)|>write_csv(here(paste0("Data/Models/Model_Stats/rmse_",model_name,".csv")))
+toc()
